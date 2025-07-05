@@ -1,0 +1,62 @@
+{
+  "name": "Sales ETL Job",
+  "email_notifications": {
+    "no_alert_for_skipped_runs": false
+  },
+  "webhook_notifications": {},
+  "timeout_seconds": 0,
+  "max_concurrent_runs": 1,
+  "tasks": [
+    {
+      "task_key": "Extract_Data_From_Source",
+      "run_if": "ALL_SUCCESS",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Notebooks/Data Extraction and EDA",
+        "source": "WORKSPACE"
+      },
+      "timeout_seconds": 0,
+      "email_notifications": {},
+      "webhook_notifications": {}
+    },
+    {
+      "task_key": "Transformation_Create_Customers_Table",
+      "depends_on": [
+        {
+          "task_key": "Extract_Data_From_Source"
+        }
+      ],
+      "run_if": "ALL_DONE",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Notebooks/Transformation - Customers Table",
+        "source": "WORKSPACE"
+      },
+      "timeout_seconds": 0,
+      "email_notifications": {},
+      "webhook_notifications": {}
+    },
+    {
+      "task_key": "Data_Upsert_For_Customers",
+      "depends_on": [
+        {
+          "task_key": "Transformation_Create_Customers_Table"
+        }
+      ],
+      "run_if": "ALL_SUCCESS",
+      "sql_task": {
+        "query": {
+          "query_id": "1d6d3a36-b408-4a6a-a18a-2a98fa601ffb"
+        },
+        "warehouse_id": "a1bf4aaf03f4716c"
+      },
+      "timeout_seconds": 0,
+      "email_notifications": {}
+    }
+  ],
+  "queue": {
+    "enabled": true
+  },
+  "performance_target": "STANDARD",
+  "run_as": {
+    "user_name": "************************"
+  }
+}
