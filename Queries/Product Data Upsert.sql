@@ -1,0 +1,5 @@
+MERGE INTO products A
+USING product_temp B
+on A.Product_ID = B.Product_ID
+WHEN MATCHED THEN UPDATE SET * 
+WHEN NOT MATCHED THEN INSERT *;
